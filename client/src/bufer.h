@@ -1,6 +1,6 @@
 #pragma once
 
-#define BUFFER_MAX_SIZE 4096
+#define BUFFER_MAX_SIZE 8192
 
 typedef struct DataBuffer
 {

@@ -33,6 +33,7 @@ namespace Net
 
 	}SocketInfo_t;
 
+
 	class Client
 	{
 	private:
@@ -56,12 +57,15 @@ namespace Net
 		
 	public:
 		Client();
+		~Client();
 
 		void Connect(const uint32_t port, const std::string& hostAddress);
 		std::string SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version);
 		void Disconnect();
 
-		uint8_t GetClientStatus();
+		inline uint8_t GetClientStatus();
+		inline std::string GetIpAddress();
+		inline uint32_t GetPort();
 
 	private:
 		void Init(const uint32_t port, const std::string& hostAddress);

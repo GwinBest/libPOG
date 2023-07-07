@@ -63,15 +63,16 @@ namespace Net
 
 		std::cout << "Client connected to " << ipAddress << ":" << this->port << std::endl;
 	}
-
-	/*HTTP port - 80,
-	HTTPS port - 443,
-	*/
+	
+	/// <summary>
+	/// HTTP port - 80
+	/// HTTPS port - 443
+	/// </summary>
 	void Client::Connect(const uint32_t port, const std::string& hostAddress)
 	{
 		if (clientStatus != ClientStatus::kClientDisconnected)
 		{
-			std::cout << "Connection Error " << clientStatus << std::endl;
+			std::cout << "Connection Error: client already connected " << std::endl;
 			exit(clientStatus);
 		}
 
@@ -98,10 +99,14 @@ namespace Net
 
 	inline std::string Client::CreateRequest(std::string& method, std::string& uri, std::string& version)
 	{
-		//request = "GET /computer/servers/razn/29/ HTTP/1.0\r\nHost:www.xserver.ru\r\nConnection: close\r\n\r\n";
-		return request = ToUpper(Trim(method)) + " " + Trim(uri) + "/ HTTP/" + Trim(version) + "\r\n" +
-						"Host:" + ToLower(Trim(hostAddress)) +
-						"\r\nConnection: close\r\n\r\n";
+		return request = ((method = ToUpper(Trim(method))) == "GET") ?
+
+			method + " " + Trim(uri) + "/ HTTP/" + Trim(version) + "\r\n" +
+			"Host:" + ToLower(Trim(hostAddress)) + "\r\nConnection: close\r\n\r\n" :
+
+			method + " " + Trim(uri) + "/ HTTP/" + Trim(version) + "\r\n" +
+			"Host:" + ToLower(Trim(hostAddress)) + "\r\nConnection: close\r\n" +
+			"Content-Type: application/json\r\n\r\n";
 	}
 	
 	void Client::Send()
@@ -126,30 +131,52 @@ namespace Net
 			freeaddrinfo(result);
 			exit(SOCKET_ERROR);
 		}
-
-		response += buffer.data;
 	}
 
 	void Client::Proccess()
 	{
 		for (size_t i = 0; i < buffer.size; i++)
 		{
+			response += buffer.data[i];
 			std::cout << buffer.data[i];
 		}
-		std::cout << std::endl;
 	}
 
 	void Client::Disconnect()
 	{
-		WSACleanup();
-		freeaddrinfo(result);
-		closesocket(clientSocket);
-		clientStatus = ClientStatus::kClientDisconnected;
+		if (clientStatus != ClientStatus::kClientDisconnected)
+		{
+			WSACleanup();
+			freeaddrinfo(result);
+			closesocket(clientSocket);
+			clientStatus = ClientStatus::kClientDisconnected;
+		}
 	}
 
-	uint8_t Client::GetClientStatus()
+	Client::~Client()
+	{
+		if (clientStatus != ClientStatus::kClientDisconnected)
+		{
+			WSACleanup();
+			freeaddrinfo(result);
+			closesocket(clientSocket);
+			clientStatus = ClientStatus::kClientDisconnected;
+		}
+	}
+
+	inline uint8_t Client::GetClientStatus()
 	{
 		return clientStatus;
+	}
+
+	inline std::string Client::GetIpAddress()
+	{
+		return ipAddress;
+	}
+
+	inline uint32_t Client::GetPort()
+	{
+		return port;
 	}
 
 }
