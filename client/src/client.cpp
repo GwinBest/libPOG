@@ -115,7 +115,7 @@ namespace Net
 		this->hostAddress = hostAddress;
 		
 		WIN(
-			std::cout << "WSA init" << std::endl;
+		std::cout << "WSA init" << std::endl;
 		if (WSAStartup(DLLVersion, &wsaData))
 		{
 			std::cout << "WSA startup failed" << std::endl;
@@ -186,6 +186,7 @@ namespace Net
 	std::string Client::SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version)
 	{
 		response.clear();
+		request.clear();
 		request = CreateRequest(const_cast<std::string&>(method), const_cast<std::string&>(uri), const_cast<std::string&>(version));
 
 		Send();
@@ -195,7 +196,6 @@ namespace Net
 			Proccess();
 		} while (buffer.size > 0);
 
-		request.clear();
 		return response;
 	}
 

@@ -113,9 +113,6 @@ namespace Net
 		void Proccess();
 		void Send();
 	};
-
-
-
 }
 
 #endif // !CLIENT_H
