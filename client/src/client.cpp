@@ -172,7 +172,7 @@ namespace Net
 
 		if (connect(clientSocket, (SOCKADDR*)socketInfo.IPv4, sizeof(*socketInfo.IPv4)))
 		{
-			std::cout << "Connection Error " << WSAGetLastError() << std::endl;
+			std::cout << "Connection Error " << ConvertError() << std::endl;
 			WIN(WSACleanup());
 			WIN(closesocket)NIX(close)(clientSocket);
 			freeaddrinfo(result);
@@ -214,7 +214,7 @@ namespace Net
 	{
 		if ((send(clientSocket, request.c_str(), request.size(), NULL) == SOCKET_ERROR))
 		{
-			std::cout << "Send error:" << WSAGetLastError() << std::endl;
+			std::cout << "Send error:" << ConvertError() << std::endl;
 			WIN(WSACleanup());
 			WIN(closesocket)NIX(close)(clientSocket);
 			freeaddrinfo(result);
@@ -226,7 +226,7 @@ namespace Net
 	{
 		if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE - 1, NULL)) == SOCKET_ERROR)
 		{
-			std::cout << "Receive error:" << WSAGetLastError() << std::endl;
+			std::cout << "Receive error:" << ConvertError() << std::endl;
 			WIN(WSACleanup());
 			WIN(closesocket)NIX(close)(clientSocket);
 			freeaddrinfo(result);
