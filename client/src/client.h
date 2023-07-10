@@ -1,8 +1,27 @@
+#ifndef CLIENT_H
+#define CLIENT_H
+
 #pragma once
 
 #include <stdint.h>
+
+
+#ifdef _WIN32 // Windows NT
+
 #include <WS2tcpip.h>
 #include <WinSock2.h>
+
+#else  //*nix
+
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <netdb.h>
+
+#endif
 
 #include <cassert>
 #include <iostream>
@@ -12,16 +31,33 @@
 #include "string.h"
 
 
-#pragma comment(lib, "ws2_32.lib")
+#ifdef _WIN32 // Windows NT
 
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr_in6 SOCKADDR_IN6;
+
+#else // POSIX
+
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr_in6 SOCKADDR_IN6;
+typedef struct addrinfo ADDRINFO;
+typedef int SOCKET; 
+
+#endif
+
+#ifdef _WIN32
+#pragma comment(lib, "ws2_32.lib")
+#endif
 
 #define INVALID_PORT -1
+#define SOCKET_ERROR -1
 
 #define IPV4_LENGTH 15
 #define IPV6_LENGTH 65
 
 #define HTTP_PORT  80
 #define HTTPS_PORT 443
+
 
 
 namespace Net
@@ -33,11 +69,14 @@ namespace Net
 
 	}SocketInfo_t;
 
-
 	class Client
 	{
 	private:
+
+#ifdef _WIN32
 		WSADATA wsaData;
+#endif
+
 		const WORD DLLVersion = MAKEWORD(2, 2);
 		SOCKET clientSocket;
 		ADDRINFO hints;
@@ -78,3 +117,5 @@ namespace Net
 
 
 }
+
+#endif // !CLIENT_H

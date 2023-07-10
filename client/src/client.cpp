@@ -1,7 +1,96 @@
 #include "client.h"
 
+#if _MSC_VER && !__INTEL_COMPILER
+
 #pragma warning(disable:4996)
 
+#endif
+
+#ifdef _WIN32 
+
+#define WIN(exp) exp
+#define NIX(exp)
+
+// convert WinSock code error to Posix error
+inline int ConvertError() {
+	switch (WSAGetLastError()) {
+	case 0:
+		return 0;
+	case WSAEINTR:
+		return EINTR;
+	case WSAEINVAL:
+		return EINVAL;
+	case WSA_INVALID_HANDLE:
+		return EBADF;
+	case WSA_NOT_ENOUGH_MEMORY:
+		return ENOMEM;
+	case WSA_INVALID_PARAMETER:
+		return EINVAL;
+	case WSAENAMETOOLONG:
+		return ENAMETOOLONG;
+	case WSAENOTEMPTY:
+		return ENOTEMPTY;
+	case WSAEWOULDBLOCK:
+		return EAGAIN;
+	case WSAEINPROGRESS:
+		return EINPROGRESS;
+	case WSAEALREADY:
+		return EALREADY;
+	case WSAENOTSOCK:
+		return ENOTSOCK;
+	case WSAEDESTADDRREQ:
+		return EDESTADDRREQ;
+	case WSAEMSGSIZE:
+		return EMSGSIZE;
+	case WSAEPROTOTYPE:
+		return EPROTOTYPE;
+	case WSAENOPROTOOPT:
+		return ENOPROTOOPT;
+	case WSAEPROTONOSUPPORT:
+		return EPROTONOSUPPORT;
+	case WSAEOPNOTSUPP:
+		return EOPNOTSUPP;
+	case WSAEAFNOSUPPORT:
+		return EAFNOSUPPORT;
+	case WSAEADDRINUSE:
+		return EADDRINUSE;
+	case WSAEADDRNOTAVAIL:
+		return EADDRNOTAVAIL;
+	case WSAENETDOWN:
+		return ENETDOWN;
+	case WSAENETUNREACH:
+		return ENETUNREACH;
+	case WSAENETRESET:
+		return ENETRESET;
+	case WSAECONNABORTED:
+		return ECONNABORTED;
+	case WSAECONNRESET:
+		return ECONNRESET;
+	case WSAENOBUFS:
+		return ENOBUFS;
+	case WSAEISCONN:
+		return EISCONN;
+	case WSAENOTCONN:
+		return ENOTCONN;
+	case WSAETIMEDOUT:
+		return ETIMEDOUT;
+	case WSAECONNREFUSED:
+		return ECONNREFUSED;
+	case WSAELOOP:
+		return ELOOP;
+	case WSAEHOSTUNREACH:
+		return EHOSTUNREACH;
+	default:
+		return EIO;
+	}
+}
+
+#else //*nix
+
+#define WIN(exp)
+#define NIX(exp) exp
+
+#endif
 
 namespace Net
 {
@@ -23,18 +112,20 @@ namespace Net
 		this->port = port;
 		this->hostAddress = hostAddress;
 		
-		std::cout << "WSA init" << std::endl;
+		WIN(
+			std::cout << "WSA init" << std::endl;
 		if (WSAStartup(DLLVersion, &wsaData))
 		{
 			std::cout << "WSA startup failed" << std::endl;
 			exit(SOCKET_ERROR);
 		}
 		std::cout << "WSA create" << std::endl;
+		);
 
 		if (getaddrinfo(hostAddress.c_str(), NULL, &hints, &result))
 		{
 			std::cout << "getaddrinfo() failed" << std::endl;
-			WSACleanup();
+			WIN(WSACleanup());
 			freeaddrinfo(result);
 			exit(SOCKET_ERROR);
 		}
@@ -55,7 +146,7 @@ namespace Net
 		if (((clientSocket = socket(socketInfo.IPv4->sin_family, SOCK_STREAM, NULL)) == SOCKET_ERROR))
 		{
 			std::cout << "Client socket init failed" << std::endl;
-			WSACleanup();
+			WIN(WSACleanup());
 			freeaddrinfo(result);
 			exit(SOCKET_ERROR);
 		}
@@ -79,7 +170,14 @@ namespace Net
 		Init(port, hostAddress);
 		clientStatus = ClientStatus::kCLientInited;
 
-		connect(clientSocket, (SOCKADDR*)socketInfo.IPv4, sizeof(*socketInfo.IPv4));
+		if (connect(clientSocket, (SOCKADDR*)socketInfo.IPv4, sizeof(*socketInfo.IPv4)))
+		{
+			std::cout << "Connection Error " << WSAGetLastError() << std::endl;
+			WIN(WSACleanup());
+			WIN(closesocket)NIX(close)(clientSocket);
+			freeaddrinfo(result);
+			exit(SOCKET_ERROR);
+		}
 		clientStatus = ClientStatus::kClientConnected;
 	}
 
@@ -117,8 +215,8 @@ namespace Net
 		if ((send(clientSocket, request.c_str(), request.size(), NULL) == SOCKET_ERROR))
 		{
 			std::cout << "Send error:" << WSAGetLastError() << std::endl;
-			WSACleanup();
-			closesocket(clientSocket);
+			WIN(WSACleanup());
+			WIN(closesocket)NIX(close)(clientSocket);
 			freeaddrinfo(result);
 			exit(SOCKET_ERROR);
 		}
@@ -129,8 +227,8 @@ namespace Net
 		if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE - 1, NULL)) == SOCKET_ERROR)
 		{
 			std::cout << "Receive error:" << WSAGetLastError() << std::endl;
-			WSACleanup();
-			closesocket(clientSocket);
+			WIN(WSACleanup());
+			WIN(closesocket)NIX(close)(clientSocket);
 			freeaddrinfo(result);
 			exit(SOCKET_ERROR);
 		}
@@ -148,9 +246,9 @@ namespace Net
 	{
 		if (clientStatus != ClientStatus::kClientDisconnected)
 		{
-			WSACleanup();
+			WIN(WSACleanup());
+			WIN(closesocket)NIX(close)(clientSocket);
 			freeaddrinfo(result);
-			closesocket(clientSocket);
 			clientStatus = ClientStatus::kClientDisconnected;
 		}
 	}
@@ -159,9 +257,9 @@ namespace Net
 	{
 		if (clientStatus != ClientStatus::kClientDisconnected)
 		{
-			WSACleanup();
+			WIN(WSACleanup());
+			WIN(closesocket)NIX(close)(clientSocket);
 			freeaddrinfo(result);
-			closesocket(clientSocket);
 			clientStatus = ClientStatus::kClientDisconnected;
 		}
 	}
@@ -181,3 +279,5 @@ namespace Net
 		return port;
 	}
 }
+
+
