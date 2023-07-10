@@ -45,7 +45,7 @@ namespace Net
 		SocketInfo_t socketInfo;
 		uint32_t infoLength;
 
-		std::string ipAddress;
+		char ipAddress[IPV6_LENGTH];
 		std::string hostAddress;
 		uint32_t port;
 
@@ -63,9 +63,9 @@ namespace Net
 		std::string SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version);
 		void Disconnect();
 
-		inline uint8_t GetClientStatus();
-		inline std::string GetIpAddress();
-		inline uint32_t GetPort();
+		uint8_t GetClientStatus();
+		char* GetIpAddress();
+		uint32_t GetPort();
 
 	private:
 		void Init(const uint32_t port, const std::string& hostAddress);

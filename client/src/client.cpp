@@ -42,12 +42,12 @@ namespace Net
 		if (result->ai_family == AF_INET)
 		{
 			socketInfo.IPv4 = (SOCKADDR_IN*)result->ai_addr;
-			inet_ntop(socketInfo.IPv4->sin_family, &socketInfo.IPv4->sin_addr, const_cast<char*>(ipAddress.c_str()), IPV4_LENGTH);
+			inet_ntop(socketInfo.IPv4->sin_family, &socketInfo.IPv4->sin_addr, this->ipAddress, IPV4_LENGTH);
 		}
 		else if (result->ai_family == AF_INET6)
 		{
 			socketInfo.IPv6 = (SOCKADDR_IN6*)result->ai_addr;
-			inet_ntop(socketInfo.IPv6->sin6_family, &socketInfo.IPv6->sin6_addr, const_cast<char*>(ipAddress.c_str()), IPV6_LENGTH);
+			inet_ntop(socketInfo.IPv6->sin6_family, &socketInfo.IPv6->sin6_addr, this->ipAddress, IPV6_LENGTH);
 		}
 		socketInfo.IPv4->sin_port = htons(this->port);
 		
@@ -61,7 +61,7 @@ namespace Net
 		}
 		std::cout << "Socket inited" << std::endl;
 
-		std::cout << "Client connected to " << ipAddress << ":" << this->port << std::endl;
+		std::cout << "Client connected to " << this->ipAddress << ":" << this->port << std::endl;
 	}
 	
 	/// <summary>
@@ -85,6 +85,7 @@ namespace Net
 
 	std::string Client::SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version)
 	{
+		response.clear();
 		request = CreateRequest(const_cast<std::string&>(method), const_cast<std::string&>(uri), const_cast<std::string&>(version));
 
 		Send();
@@ -94,6 +95,7 @@ namespace Net
 			Proccess();
 		} while (buffer.size > 0);
 
+		request.clear();
 		return response;
 	}
 
@@ -102,11 +104,12 @@ namespace Net
 		return request = ((method = ToUpper(Trim(method))) == "GET") ?
 
 			method + " " + Trim(uri) + "/ HTTP/" + Trim(version) + "\r\n" +
-			"Host:" + ToLower(Trim(hostAddress)) + "\r\nConnection: close\r\n\r\n" :
+			"Host:" + ToLower(Trim(hostAddress)) + "\r\n" +
+			"Connection: close\r\n\r\n" :
 
 			method + " " + Trim(uri) + "/ HTTP/" + Trim(version) + "\r\n" +
 			"Host:" + ToLower(Trim(hostAddress)) + "\r\nConnection: close\r\n" +
-			"Content-Type: application/json\r\n\r\n";
+			"Content-Type: text/html\r\n\r\n";
 	}
 	
 	void Client::Send()
@@ -123,7 +126,7 @@ namespace Net
 
 	void Client::Receive()
 	{
-		if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE - 1, NULL)) == SOCKET_ERROR)
+		if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE, NULL)) == SOCKET_ERROR)
 		{
 			std::cout << "Receive error:" << WSAGetLastError() << std::endl;
 			WSACleanup();
@@ -138,7 +141,6 @@ namespace Net
 		for (size_t i = 0; i < buffer.size; i++)
 		{
 			response += buffer.data[i];
-			std::cout << buffer.data[i];
 		}
 	}
 
@@ -164,17 +166,17 @@ namespace Net
 		}
 	}
 
-	inline uint8_t Client::GetClientStatus()
+	uint8_t Client::GetClientStatus()
 	{
 		return clientStatus;
 	}
 
-	inline std::string Client::GetIpAddress()
+	char* Client::GetIpAddress()
 	{
 		return ipAddress;
 	}
 
-	inline uint32_t Client::GetPort()
+	uint32_t Client::GetPort()
 	{
 		return port;
 	}
