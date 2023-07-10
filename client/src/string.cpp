@@ -8,13 +8,13 @@ std::string& Trim(std::string& stringToTrim)
 	return stringToTrim;
 } 
 
-inline void TrimFront(std::string& stringToTrim)
+void TrimFront(std::string& stringToTrim)
 {
 	stringToTrim.erase(stringToTrim.begin(), std::find_if(stringToTrim.begin(), stringToTrim.end(), [](unsigned char ch) {
 		return !std::isspace(ch);}));
 }
 
-inline void TrimEnd(std::string& stringToTrim)
+void TrimEnd(std::string& stringToTrim)
 {
 	stringToTrim.erase(std::find_if(stringToTrim.rbegin(), stringToTrim.rend(), [](unsigned char ch) {
 		return !std::isspace(ch);
