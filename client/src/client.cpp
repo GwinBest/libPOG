@@ -126,7 +126,7 @@ namespace Net
 
 	void Client::Receive()
 	{
-		if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE, NULL)) == SOCKET_ERROR)
+		if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE - 1, NULL)) == SOCKET_ERROR)
 		{
 			std::cout << "Receive error:" << WSAGetLastError() << std::endl;
 			WSACleanup();
