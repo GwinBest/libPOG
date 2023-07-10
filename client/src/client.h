@@ -75,9 +75,9 @@ namespace Net
 
 #ifdef _WIN32
 		WSADATA wsaData;
+		const WORD DLLVersion = MAKEWORD(2, 2);
 #endif
 
-		const WORD DLLVersion = MAKEWORD(2, 2);
 		SOCKET clientSocket;
 		ADDRINFO hints;
 		ADDRINFO* result;

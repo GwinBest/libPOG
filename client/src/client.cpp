@@ -12,8 +12,10 @@
 #define NIX(exp)
 
 // convert WinSock code error to Posix error
-inline int ConvertError() {
-	switch (WSAGetLastError()) {
+inline int ConvertError()
+{
+	switch (WSAGetLastError())
+	{
 	case 0:
 		return 0;
 	case WSAEINTR:
