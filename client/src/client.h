@@ -48,7 +48,7 @@ namespace Net
 		char ipAddress[IPV6_LENGTH];
 		std::string hostAddress;
 		uint32_t port;
-
+		
 		std::string request;
 		std::string response;
 		DataBuffer_t buffer;

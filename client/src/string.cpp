@@ -1,6 +1,6 @@
 #include "string.h"
 
-std::string Trim(std::string stringToTrim)
+std::string& Trim(std::string& stringToTrim)
 {
 	TrimFront(stringToTrim);
 	TrimEnd(stringToTrim);
@@ -21,7 +21,7 @@ inline void TrimEnd(std::string& stringToTrim)
 		}).base(), stringToTrim.end());
 }
 
-std::string ToUpper(std::string stringToUpper)
+std::string ToUpper(std::string& stringToUpper)
 {
 	for (auto& ch : stringToUpper)
 	{
@@ -31,7 +31,7 @@ std::string ToUpper(std::string stringToUpper)
 	return stringToUpper;
 }
 
-std::string ToLower(std::string stringToLower)
+std::string ToLower(std::string& stringToLower)
 {
 	for (auto& ch : stringToLower)
 	{
