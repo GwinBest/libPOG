@@ -1,4 +1,4 @@
-#include "client.h"
+#include "HTTPClient.h"
 
 #if _MSC_VER && !__INTEL_COMPILER
 
@@ -96,11 +96,11 @@ inline int ConvertError()
 
 namespace Net
 {
-	Client::Client()
+	HTTPClient::HTTPClient()
 	{
 		result = nullptr;
-		socketInfo.IPv4 = nullptr;
-		port = INVALID_PORT;
+		socketInfo.IPv4 = nullptr; 
+		port = ntohs(INVALID_PORT);
 		clientSocket = INVALID_SOCKET;
 		infoLength = sizeof(*socketInfo.IPv4);
 		clientStatus = ClientStatus::kClientDisconnected;
@@ -109,7 +109,7 @@ namespace Net
 		hints.ai_family = AF_UNSPEC;
 	}
 
-	void Client::Init(const uint32_t port, const std::string& hostAddress)
+	void HTTPClient::Init(const uint32_t port, const std::string& hostAddress)
 	{
 		this->port = port;
 		this->hostAddress = hostAddress;
@@ -155,35 +155,34 @@ namespace Net
 		std::cout << "Socket inited" << std::endl;
 
 		std::cout << "Client connected to " << this->ipAddress << ":" << this->port << std::endl;
+		clientStatus = ClientStatus::kCLientInited;
 	}
 	
 	/// <summary>
 	/// HTTP port - 80
 	/// HTTPS port - 443
 	/// </summary>
-	void Client::Connect(const uint32_t port, const std::string& hostAddress)
+	bool HTTPClient::Connect(const uint32_t port, const std::string& hostAddress)
 	{
 		if (clientStatus != ClientStatus::kClientDisconnected)
 		{
 			std::cout << "Connection Error: client already connected " << std::endl;
-			exit(clientStatus);
+			return false;
 		}
 
 		Init(port, hostAddress);
-		clientStatus = ClientStatus::kCLientInited;
-
+		
 		if (connect(clientSocket, (SOCKADDR*)socketInfo.IPv4, sizeof(*socketInfo.IPv4)))
 		{
 			std::cout << "Connection Error " << ConvertError() << std::endl;
-			WIN(WSACleanup());
-			WIN(closesocket)NIX(close)(clientSocket);
-			freeaddrinfo(result);
-			exit(SOCKET_ERROR);
+			return false;
 		}
 		clientStatus = ClientStatus::kClientConnected;
+
+		return true;
 	}
 
-	std::string Client::SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version)
+	std::string HTTPClient::SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version)
 	{
 		response.clear();
 		request.clear();
@@ -199,7 +198,7 @@ namespace Net
 		return response;
 	}
 
-	inline std::string Client::CreateRequest(std::string& method, std::string& uri, std::string& version)
+	inline std::string HTTPClient::CreateRequest(std::string& method, std::string& uri, std::string& version)
 	{
 		return request = ((method = ToUpper(Trim(method))) == "GET") ?
 
@@ -212,7 +211,7 @@ namespace Net
 			"Content-Type: text/html\r\n\r\n";
 	}
 	
-	void Client::Send()
+	void HTTPClient::Send()
 	{
 		if ((send(clientSocket, request.c_str(), request.size(), NULL) == SOCKET_ERROR))
 		{
@@ -224,7 +223,7 @@ namespace Net
 		}
 	}
 
-	void Client::Receive()
+	void HTTPClient::Receive()
 	{
 		if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE - 1, NULL)) == SOCKET_ERROR)
 		{
@@ -236,15 +235,15 @@ namespace Net
 		}
 	}
 
-	void Client::Proccess()
+	void HTTPClient::Proccess()
 	{
-		for (size_t i = 0; i < buffer.size; i++)
+		for (size_t i = 0; i < buffer.size; ++i)
 		{
 			response += buffer.data[i];
 		}
 	}
 
-	void Client::Disconnect()
+	void HTTPClient::Disconnect()
 	{
 		if (clientStatus != ClientStatus::kClientDisconnected)
 		{
@@ -255,7 +254,7 @@ namespace Net
 		}
 	}
 
-	Client::~Client()
+	HTTPClient::~HTTPClient()
 	{
 		if (clientStatus != ClientStatus::kClientDisconnected)
 		{
@@ -266,20 +265,21 @@ namespace Net
 		}
 	}
 
-	uint8_t Client::GetClientStatus()
+	uint8_t HTTPClient::GetClientStatus()
 	{
 		return clientStatus;
 	}
 
-	char* Client::GetIpAddress()
+	char* HTTPClient::GetIpAddress()
 	{
 		return ipAddress;
 	}
 
-	uint32_t Client::GetPort()
+	uint32_t HTTPClient::GetPort()
 	{
 		return port;
 	}
+
 }
 
 

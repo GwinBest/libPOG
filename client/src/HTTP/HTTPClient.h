@@ -1,5 +1,5 @@
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef HTTPCLIENT_H
+#define HTTPCLIENT_H
 
 #pragma once
 
@@ -26,9 +26,9 @@
 #include <cassert>
 #include <iostream>
 
-#include "bufer.h"
-#include "clientStatus.h"
-#include "string.h"
+#include "../bufer.h"
+#include "../clientStatus.h"
+#include "../string.h"
 
 
 #ifdef _WIN32 // Windows NT
@@ -49,8 +49,10 @@ typedef int SOCKET;
 #pragma comment(lib, "ws2_32.lib")
 #endif
 
-#define INVALID_PORT -1
+#define INVALID_PORT  0
+#ifndef SOCKET_ERROR
 #define SOCKET_ERROR -1
+#endif
 
 #define IPV4_LENGTH 15
 #define IPV6_LENGTH 65
@@ -69,13 +71,13 @@ namespace Net
 
 	}SocketInfo_t;
 
-	class Client
+	class HTTPClient
 	{
-	private:
+	protected:
 
 #ifdef _WIN32
 		WSADATA wsaData;
-		const WORD DLLVersion = MAKEWORD(2, 2);
+		static const WORD DLLVersion = MAKEWORD(2, 2);
 #endif
 
 		SOCKET clientSocket;
@@ -88,17 +90,18 @@ namespace Net
 		std::string hostAddress;
 		uint32_t port;
 		
+	private:
 		std::string request;
 		std::string response;
 		DataBuffer_t buffer;
-	
+
 		uint8_t clientStatus;
 		
 	public:
-		Client();
-		~Client();
+		HTTPClient();
+		~HTTPClient();
 
-		void Connect(const uint32_t port, const std::string& hostAddress);
+		bool Connect(const uint32_t port, const std::string& hostAddress);
 		std::string SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version);
 		void Disconnect();
 
@@ -106,13 +109,15 @@ namespace Net
 		char* GetIpAddress();
 		uint32_t GetPort();
 
+	protected:
+		inline std::string CreateRequest(std::string& method, std::string& uri, std::string& version);
+
 	private:
 		void Init(const uint32_t port, const std::string& hostAddress);
-		inline std::string CreateRequest(std::string& method, std::string& uri, std::string& version);
 		void Receive();
 		void Proccess();
 		void Send();
 	};
 }
 
-#endif // !CLIENT_H
+#endif // !HTTPClient_H
