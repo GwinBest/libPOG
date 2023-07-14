@@ -26,7 +26,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "../bufer.h"
+#include "../buffer.h"
 #include "../clientStatus.h"
 #include "../string.h"
 
