@@ -44,5 +44,8 @@
     <ClInclude Include="src\HTTPS\HTTPSClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
