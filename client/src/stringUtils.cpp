@@ -1,4 +1,4 @@
-#include "string.h"
+#include "stringUtils.h"
 
 std::string& Trim(std::string& stringToTrim)
 {

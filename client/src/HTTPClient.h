@@ -28,7 +28,7 @@
 
 #include "buffer.h"
 #include "clientStatus.h"
-#include "StringUtils.h"
+#include "stringUtils.h"
 
 
 #ifdef _WIN32 // Windows NT
