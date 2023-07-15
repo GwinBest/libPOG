@@ -1,5 +1,5 @@
-#include "../src/HTTP/HTTPClient.h"
-#include "../src/HTTPS/HTTPSClient.h"
+#include "../src/HTTPClient.h"
+#include "../src/HTTPSClient.h"
 
 #include <locale>
 
