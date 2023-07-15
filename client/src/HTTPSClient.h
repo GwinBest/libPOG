@@ -6,7 +6,7 @@
 #include <openssl/bio.h>
 #include <openssl/err.h>
 
-#include "../HTTP/HTTPClient.h"
+#include "HTTPClient.h"
 
 
 namespace Net

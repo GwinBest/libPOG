@@ -26,9 +26,9 @@
 #include <cassert>
 #include <iostream>
 
-#include "../buffer.h"
-#include "../clientStatus.h"
-#include "../string.h"
+#include "buffer.h"
+#include "clientStatus.h"
+#include "StringUtils.h"
 
 
 #ifdef _WIN32 // Windows NT
