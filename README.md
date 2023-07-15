@@ -7,6 +7,7 @@ git clone https://github.com/GwinBest/libPOG
 ```
 Make a `builds` folder 
 ```
+cd libPOG
 mkdir builds
 cd builds
 ```
