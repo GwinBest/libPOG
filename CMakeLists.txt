@@ -22,20 +22,15 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_BINARY_DIR}/lib/x64/debug)
     file(COPY
         dependencies/openssl/x64/lib/
+        dependencies/openssl/x64/bin/
         DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG}
     )
-    file(COPY
-        dependencies/openssl/x64/lib/
-        DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG}
-    )
+    
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib/x64/release)
     file(COPY
         dependencies/openssl/x64/lib/
-        DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}
-    )
-    file(COPY
-        dependencies/openssl/x64/lib/
+        dependencies/openssl/x64/bin/
         DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}
     )
 endif()
