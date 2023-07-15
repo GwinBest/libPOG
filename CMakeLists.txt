@@ -23,20 +23,42 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_BINARY_DIR}/lib/x64/debug)
-    file(COPY
-        dependencies/openssl/x64/lib/
-        dependencies/openssl/x64/bin/
-        DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG}
-    )
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        # x64 Debug
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_BINARY_DIR}/lib/x64/debug)
+        file(COPY
+            dependencies/openssl/x64/lib/
+            dependencies/openssl/x64/bin/
+            DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG}
+        )
+    elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+        # x86 Debug
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_BINARY_DIR}/lib/x86/debug)
+        file(COPY
+            dependencies/openssl/x86/lib/
+            dependencies/openssl/x86/bin/
+            DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG}
+        )
+    endif()
     
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib/x64/release)
-    file(COPY
-        dependencies/openssl/x64/lib/
-        dependencies/openssl/x64/bin/
-        DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}
-    )
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        # x64 Release
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib/x64/release)
+        file(COPY
+            dependencies/openssl/x64/lib/
+            dependencies/openssl/x64/bin/
+            DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}
+        )
+    elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+        # x86 Release
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib/x86/release)
+        file(COPY
+            dependencies/openssl/x86/lib/
+            dependencies/openssl/x86/bin/
+            DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE}
+        )
+    endif()
 endif()
 
 add_library(libPOG
