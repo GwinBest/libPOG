@@ -115,13 +115,11 @@ namespace Net
 		this->hostAddress = hostAddress;
 		
 		WIN(
-		std::cout << "WSA init" << std::endl;
 		if (WSAStartup(DLLVersion, &wsaData))
 		{
 			std::cout << "WSA startup failed" << std::endl;
 			exit(SOCKET_ERROR);
 		}
-		std::cout << "WSA create" << std::endl;
 		);
 
 		if (getaddrinfo(hostAddress.c_str(), NULL, &hints, &result))
@@ -144,7 +142,6 @@ namespace Net
 		}
 		socketInfo.IPv4->sin_port = htons(this->port);
 		
-		std::cout << "Socket init" << std::endl;
 		if (((clientSocket = socket(socketInfo.IPv4->sin_family, SOCK_STREAM, NULL)) == SOCKET_ERROR))
 		{
 			std::cout << "Client socket init failed" << std::endl;
@@ -152,9 +149,7 @@ namespace Net
 			freeaddrinfo(result);
 			exit(SOCKET_ERROR);
 		}
-		std::cout << "Socket inited" << std::endl;
 
-		std::cout << "Client connected to " << this->ipAddress << ":" << this->port << std::endl;
 		clientStatus = ClientStatus::kCLientInited;
 	}
 	

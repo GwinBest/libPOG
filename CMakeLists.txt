@@ -13,7 +13,7 @@ file(COPY
     dependencies/openssl/include/openssl
     DESTINATION ${CMAKE_BINARY_DIR}/include)
 
-# Установка значения CMAKE_BUILD_TYPE по умолчанию, если не указано пользователем
+# CMAKE_BUILD_TYPE == DEBUG by default
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
