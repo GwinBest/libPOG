@@ -72,7 +72,4 @@ add_library(libPOG
     client/src/clientStatus.h
 )
 
-target_link_libraries(libPOG
-    ${CMAKE_BINARY_DIR}/dependencies/openssl/x64/lib/libcrypto.lib
-    ${CMAKE_BINARY_DIR}/dependencies/openssl/x64/lib/libssl.lib
-)
+
