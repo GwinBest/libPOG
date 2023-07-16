@@ -20,7 +20,7 @@ Build the project
 cmake --build . --config Debug
 ```
 At this point, you will have a static library at `lib\x64\${Build Configuration}\libPOG.(your OS static library extension)`. 
-All you have to do now - is to include `include\` folder to your project, link the library, add `libcrypto.lib` and `libssl.lib` to additional dependencies
+All you have to do now - is to include `include\` folder to your project, link the library, add `libcrypto.lib`, `libssl.lib` and `libPOG.lib` to additional dependencies
 and add `libcrypto-3-x64.dll` and `libssl-3-x64.dll` to your executable.
 #### If you wnat to create for `x86` you should create a new folder e.g. `builds-x86` and set `-DCMAKE_GENERATOR_PLATFORM=Win32`
 ## Usage example 
@@ -28,7 +28,8 @@ and add `libcrypto-3-x64.dll` and `libssl-3-x64.dll` to your executable.
 #include <HTTPClient.h>
 #include <HTTPSClient.h>
 //---https client---//
-
+int main()
+{
     Net::HTTPSClient httpClient;
     httpClient.HTTPSConnect(HTTPS_PORT, "en.wikipedia.org");
     std::string response = httpClient.SendHttpsRequest("get", "/wiki/Manchester_United_F.C.", "1.1");
@@ -61,6 +62,6 @@ and add `libcrypto-3-x64.dll` and `libssl-3-x64.dll` to your executable.
     std::cout << "Response 2: " << response << std::endl;
 
     client.Disconnect();
-
+}
 
 ```
