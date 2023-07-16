@@ -27,9 +27,11 @@ and add `libcrypto-3-x64.dll` and `libssl-3-x64.dll` to your executable.
 ``` c++
 #include <HTTPClient.h>
 #include <HTTPSClient.h>
-//---https client---//
+
 int main()
 {
+//---https client---//
+
     Net::HTTPSClient httpClient;
     httpClient.HTTPSConnect(HTTPS_PORT, "en.wikipedia.org");
     std::string response = httpClient.SendHttpsRequest("get", "/wiki/Manchester_United_F.C.", "1.1");
