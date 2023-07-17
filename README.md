@@ -64,6 +64,8 @@ int main()
     std::cout << "Response 2: " << response << std::endl;
 
     client.Disconnect();
+
+    return 0;
 }
 
 ```
