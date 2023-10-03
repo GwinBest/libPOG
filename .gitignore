@@ -18,6 +18,8 @@ mono_crash.*
 
 # Build results
 [Bb]uild/
+[Bb]uilds-x64/
+[Bb]uilds-x86/
 [Bb]uilds/
 [Dd]ebug/
 [Dd]ebugPublic/
