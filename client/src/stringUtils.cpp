@@ -24,9 +24,7 @@ void TrimEnd(std::string& stringToTrim)
 std::string ToUpper(std::string& stringToUpper)
 {
 	for (auto& ch : stringToUpper)
-	{
-			ch = toupper(ch);
-	}
+		ch = toupper(ch);
 	
 	return stringToUpper;
 }
@@ -34,9 +32,7 @@ std::string ToUpper(std::string& stringToUpper)
 std::string ToLower(std::string& stringToLower)
 {
 	for (auto& ch : stringToLower)
-	{
-			ch = tolower(ch);
-	}
+		ch = tolower(ch);
 	
 	return stringToLower;
 }

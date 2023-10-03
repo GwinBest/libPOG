@@ -5,7 +5,6 @@
 
 #include <string>
 
-
 std::string& Trim(std::string& stringToTrim);
 void TrimFront(std::string& stringToTrim);
 void TrimEnd(std::string& stringToTrim);

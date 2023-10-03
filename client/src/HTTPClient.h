@@ -27,7 +27,6 @@
 #include <iostream>
 
 #include "buffer.h"
-#include "clientStatus.h"
 #include "stringUtils.h"
 
 
@@ -74,6 +73,13 @@ namespace Net
 	class HTTPClient
 	{
 	protected:
+
+		enum ClientStatus : uint8_t
+		{
+			kClientDisconnected = 0,
+			kCLientInited		= 1,
+			kClientConnected	= 2,
+		};
 
 #ifdef _WIN32
 		WSADATA wsaData;

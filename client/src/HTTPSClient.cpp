@@ -40,7 +40,7 @@ namespace Net
 			exit(SOCKET_ERROR);
 		}
 
-		if (!Connect(port, hostAddress))   // connect to TCP socket
+		if (!Connect(port, hostAddress))				// connect to TCP socket
 		{
 			std::cout << "Failed to establish SSL connection" << std::endl;
 			ERR_print_errors_fp(stderr);
@@ -53,7 +53,7 @@ namespace Net
 			exit(SOCKET_ERROR);
 		}
 
-		SSL_set_fd(sslSocket, clientSocket);   //Binding an SSL socket to a TCP socket
+		SSL_set_fd(sslSocket, clientSocket);			//Binding an SSL socket to a TCP socket
 
 		clientStatus = ClientStatus::kCLientInited;
 	}
@@ -130,9 +130,7 @@ namespace Net
 	void HTTPSClient::Proccess()
 	{
 		for (size_t i = 0; i < buffer.size; ++i)
-		{
 			response += buffer.data[i];
-		}
 	}
 
 	uint8_t HTTPSClient::GetClientStatus()
@@ -164,13 +162,7 @@ namespace Net
 
 	HTTPSClient::~HTTPSClient()
 	{
-		if (clientStatus != ClientStatus::kClientDisconnected)
-		{
-			SSL_shutdown(sslSocket);
-			SSL_free(sslSocket);
-			SSL_CTX_free(sslContext);
-			clientStatus = ClientStatus::kClientDisconnected;
-		}
+		HTTPSClient::Disconnect();
 	}
 
 }

@@ -233,9 +233,7 @@ namespace Net
 	void HTTPClient::Proccess()
 	{
 		for (size_t i = 0; i < buffer.size; ++i)
-		{
 			response += buffer.data[i];
-		}
 	}
 
 	void HTTPClient::Disconnect()
@@ -251,13 +249,7 @@ namespace Net
 
 	HTTPClient::~HTTPClient()
 	{
-		if (clientStatus != ClientStatus::kClientDisconnected)
-		{
-			WIN(WSACleanup());
-			WIN(closesocket)NIX(close)(clientSocket);
-			freeaddrinfo(result);
-			clientStatus = ClientStatus::kClientDisconnected;
-		}
+		HTTPClient::Disconnect();
 	}
 
 	uint8_t HTTPClient::GetClientStatus()
