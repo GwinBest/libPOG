@@ -13,7 +13,6 @@ file(COPY
     client/src/HTTPSClient.h
     client/src/StringUtils.h
     client/src/buffer.h
-    client/src/clientStatus.h
     dependencies/openssl/include/openssl
     DESTINATION ${CMAKE_BINARY_DIR}/include/libPOG)
 
