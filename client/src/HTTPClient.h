@@ -76,9 +76,9 @@ namespace Net
 
 		enum ClientStatus : uint8_t
 		{
-			kClientDisconnected = 0,
-			kCLientInited		= 1,
-			kClientConnected	= 2,
+			kClientDisconnected		= 0,
+			kCLientInited			= 1,
+			kClientConnected		= 2,
 		};
 
 #ifdef _WIN32
