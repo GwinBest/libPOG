@@ -15,7 +15,7 @@ file(COPY
     client/src/buffer.h
     client/src/clientStatus.h
     dependencies/openssl/include/openssl
-    DESTINATION ${CMAKE_BINARY_DIR}/include)
+    DESTINATION ${CMAKE_BINARY_DIR}/include/libPOG)
 
 # CMAKE_BUILD_TYPE == DEBUG by default
 if(NOT CMAKE_BUILD_TYPE)
