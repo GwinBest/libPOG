@@ -68,7 +68,6 @@ add_library(libPOG
     client/src/StringUtils.h
     client/src/StringUtils.cpp
     client/src/buffer.h
-    client/src/clientStatus.h
 )
 
 target_link_libraries(libPOG
