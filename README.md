@@ -5,24 +5,22 @@ Then, clone a repository
 ```
 git clone https://github.com/GwinBest/libPOG
 ```
-Make a `builds-x64` folder 
+Make a `build` folder 
 ```
 cd libPOG
-mkdir builds-x64
-cd builds-x64
+mkdir build
+cd build
 ```
 Then, run Cmake
 ```
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_GENERATOR_PLATFORM=x64 ..
+cmake ..
 ```
 Build the project
 ```
-cmake --build . --config Debug
+cmake --build .
 ```
-At this point, you will have a static library at `lib\x64\${Build Configuration}\libPOG.(your OS static library extension)`. 
-All you have to do now - is to include `include\` folder to your project, link the library, add `libcrypto.lib`, `libssl.lib` and `libPOG.lib` to additional dependencies
-and add `libcrypto-3-x64.dll` and `libssl-3-x64.dll` to your executable.
-#### If you wnat to create for `x86` you should create a new folder e.g. `builds-x86` and set `-DCMAKE_GENERATOR_PLATFORM=Win32`
+At this point, you will have a static library at `lib\libPOG.(your OS static library extension)`. 
+All you have to do now - is to include `include\` folder to your project, link the library and add `libcrypto.lib`, `libssl.lib` and `libPOG.lib` to additional dependencies.
 ## Usage example 
 ``` c++
 #include <HTTPClient.h>
