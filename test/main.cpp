@@ -1,7 +1,9 @@
 #include "../src/HTTPClient.h"
 #include "../src/HTTPSClient.h"
 
+#include <iostream>
 #include <locale>
+
 
 int main()
 {
