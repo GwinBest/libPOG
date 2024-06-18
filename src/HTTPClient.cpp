@@ -1,9 +1,12 @@
 #include "HTTPClient.h"
 
+#include <cassert>
+#include <iostream>
+
+#include "stringUtils.h"
+
 #if _MSC_VER && !__INTEL_COMPILER
-
 #pragma warning(disable:4996)
-
 #endif
 
 #ifdef _WIN32 

@@ -12,6 +12,8 @@
 
 #endif
 
+#include <openssl/bio.h>
+#include <openssl/err.h>
 
 namespace Net
 {
@@ -164,5 +166,4 @@ namespace Net
 	{
 		HTTPSClient::Disconnect();
 	}
-
 }

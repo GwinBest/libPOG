@@ -1,18 +1,13 @@
 #ifndef HTTPCLIENT_H
 #define HTTPCLIENT_H
 
-#pragma once
-
 #include <stdint.h>
-
 
 #ifdef _WIN32 // Windows NT
 
 #include <WS2tcpip.h>
 #include <WinSock2.h>
-
 #else  //*nix
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -20,15 +15,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
-
 #endif
 
-#include <cassert>
-#include <iostream>
-
 #include "buffer.h"
-#include "stringUtils.h"
-
 
 #ifdef _WIN32 // Windows NT
 
@@ -58,8 +47,6 @@ typedef int SOCKET;
 
 #define HTTP_PORT  80
 #define HTTPS_PORT 443
-
-
 
 namespace Net
 {

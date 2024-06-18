@@ -1,13 +1,11 @@
 #ifndef HTTPSCLIENT_H
 #define HTTPSCLIENT_H
-#pragma once
+
+#include <string>
 
 #include <openssl/ssl.h>
-#include <openssl/bio.h>
-#include <openssl/err.h>
 
 #include "HTTPClient.h"
-
 
 namespace Net
 {

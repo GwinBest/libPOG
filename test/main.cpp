@@ -3,7 +3,6 @@
 
 #include <locale>
 
-
 int main()
 {
     //---https client---//
@@ -23,9 +22,6 @@ int main()
     response.clear();
     httpClient.HTTPSDisconnect();
 
-
-
-
     //---http client---//
 
     Net::HTTPClient client;
@@ -44,6 +40,5 @@ int main()
 
     client.Disconnect();
     return 0;
-	
 }
 
