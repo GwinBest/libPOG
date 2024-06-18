@@ -12,6 +12,8 @@
 
 #endif
 
+#include <iostream>
+
 #include <openssl/bio.h>
 #include <openssl/err.h>
 

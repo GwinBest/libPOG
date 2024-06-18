@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <string>
+
 #ifdef _WIN32 // Windows NT
 
 #include <WS2tcpip.h>

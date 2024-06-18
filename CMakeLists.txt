@@ -25,7 +25,6 @@ add_library(libPOG
     src/StringUtils.h
     src/StringUtils.cpp
     src/buffer.h
-    test/main.cpp
 )
 
 target_link_libraries(libPOG ssl)
