@@ -2,8 +2,9 @@
 ## Getting Started 
 ### First, download the latest version of [CMake](https://cmake.org/download/)
 Then, clone a repository
+This repo uses gitmodules, so clone it recursive:
 ```
-git clone https://github.com/GwinBest/libPOG
+git clone --recursive https://github.com/GwinBest/libPOG
 ```
 Make a `build` folder 
 ```
