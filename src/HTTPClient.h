@@ -3,10 +3,7 @@
 
 #include <stdint.h>
 
-#include <string>
-
 #ifdef _WIN32 // Windows NT
-
 #include <WS2tcpip.h>
 #include <WinSock2.h>
 #else  //*nix
@@ -18,21 +15,18 @@
 #include <stdlib.h>
 #include <netdb.h>
 #endif
+#include <string>
 
 #include "buffer.h"
 
 #ifdef _WIN32 // Windows NT
-
 typedef struct sockaddr_in SOCKADDR_IN;
 typedef struct sockaddr_in6 SOCKADDR_IN6;
-
 #else // POSIX
-
 typedef struct sockaddr_in SOCKADDR_IN;
 typedef struct sockaddr_in6 SOCKADDR_IN6;
 typedef struct addrinfo ADDRINFO;
-typedef int SOCKET; 
-
+typedef int SOCKET;
 #endif
 
 #ifdef _WIN32
@@ -52,67 +46,66 @@ typedef int SOCKET;
 
 namespace Net
 {
-	typedef union SocketInfo
-	{
-		SOCKADDR_IN* IPv4;
-		SOCKADDR_IN6* IPv6;
+    union SocketInfo
+    {
+        SOCKADDR_IN* IPv4;
+        SOCKADDR_IN6* IPv6;
+    };
 
-	}SocketInfo_t;
+    class HTTPClient
+    {
+    public:
+        HTTPClient();
+        ~HTTPClient();
 
-	class HTTPClient
-	{
-	protected:
+        bool Connect(const uint32_t port, const std::string& hostAddress);
+        std::string SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version);
+        void Disconnect();
 
-		enum ClientStatus : uint8_t
-		{
-			kClientDisconnected		= 0,
-			kCLientInited			= 1,
-			kClientConnected		= 2,
-		};
+        uint8_t GetClientStatus();
+        char* GetIpAddress();
+        uint32_t GetPort();
+
+    protected:
+        inline std::string CreateRequest(std::string& method, std::string& uri, std::string& version);
+
+    protected:
+
+        enum ClientStatus : uint8_t
+        {
+            kClientDisconnected = 0,
+            kCLientInited = 1,
+            kClientConnected = 2,
+        };
 
 #ifdef _WIN32
-		WSADATA wsaData;
-		static const WORD DLLVersion = MAKEWORD(2, 2);
+        WSADATA wsaData;
+        static const WORD DLLVersion = MAKEWORD(2, 2);
 #endif
 
-		SOCKET clientSocket;
-		ADDRINFO hints;
-		ADDRINFO* result;
-		SocketInfo_t socketInfo;
-		uint32_t infoLength;
+        SOCKET clientSocket;
+        ADDRINFO hints;
+        ADDRINFO* result;
+        SocketInfo socketInfo;
+        uint32_t infoLength;
 
-		char ipAddress[IPV6_LENGTH];
-		std::string hostAddress;
-		uint32_t port;
-		
-	private:
-		std::string request;
-		std::string response;
-		DataBuffer_t buffer;
+        char ipAddress[IPV6_LENGTH];
+        std::string hostAddress;
+        uint32_t port;
 
-		uint8_t clientStatus;
-		
-	public:
-		HTTPClient();
-		~HTTPClient();
+    private:
+        void Init(const uint32_t port, const std::string& hostAddress);
+        void Receive();
+        void Proccess();
+        void Send();
 
-		bool Connect(const uint32_t port, const std::string& hostAddress);
-		std::string SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version);
-		void Disconnect();
+    private:
+        std::string request;
+        std::string response;
+        DataBuffer buffer;
 
-		uint8_t GetClientStatus();
-		char* GetIpAddress();
-		uint32_t GetPort();
-
-	protected:
-		inline std::string CreateRequest(std::string& method, std::string& uri, std::string& version);
-
-	private:
-		void Init(const uint32_t port, const std::string& hostAddress);
-		void Receive();
-		void Proccess();
-		void Send();
-	};
+        ClientStatus clientStatus;
+    };
 }
 
 #endif // !HTTPClient_H
