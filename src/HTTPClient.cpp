@@ -229,8 +229,7 @@ namespace Net
 
     void HTTPClient::Proccess()
     {
-        for (size_t i = 0; i < buffer.size; ++i)
-            response += buffer.data[i];
+        response.assign(buffer.data);
     }
 
     void HTTPClient::Disconnect()

@@ -130,8 +130,7 @@ namespace Net
 
     void HTTPSClient::Proccess()
     {
-        for (size_t i = 0; i < buffer.size; ++i)
-            response += buffer.data[i];
+        response.assign(buffer.data);
     }
 
     uint8_t HTTPSClient::GetClientStatus()
