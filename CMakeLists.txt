@@ -11,7 +11,7 @@ add_library(libPOG
     src/HTTPSClient.cpp
     src/stringUtils.h
     src/stringUtils.cpp
-    src/buffer.h
+    src/dataBuffer.h
 )
 
 target_include_directories(libPOG PUBLIC ${CMAKE_BINARY_DIR}/ssl/include)
@@ -27,7 +27,7 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include/libPOG)
 file(COPY 
     src/HTTPClient.h
     src/HTTPSClient.h
-    src/buffer.h
+    src/dataBuffer.h
     ${CMAKE_BINARY_DIR}/ssl/include/openssl
     DESTINATION ${CMAKE_BINARY_DIR}/include/libPOG
 )
