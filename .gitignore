@@ -364,3 +364,7 @@ FodyWeavers.xsd
 /libPOG.sln
 /client/client.vcxproj
 /client/client.vcxproj.filters
+
+CMakeFiles
+/include
+/ssl
