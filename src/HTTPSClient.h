@@ -7,25 +7,24 @@
 
 #include "HTTPClient.h"
 
-namespace Net
-{
-    class HTTPSClient final : HTTPClient
-    {
+namespace Net {
+    class HTTPSClient final : HTTPClient {
     public:
         HTTPSClient();
-        ~HTTPSClient();
+        ~HTTPSClient() override { HTTPSClient::Disconnect(); }
 
         bool HTTPSConnect(const uint32_t port, const std::string& hostAddress);
         std::string SendHttpsRequest(const std::string& method, const std::string& uri, const std::string& version);
         void HTTPSDisconnect();
 
-        uint8_t GetClientStatus();
-        char* GetIpAddress();
-        uint32_t GetPort();
+        inline uint8_t GetClientStatus() { return clientStatus; };
+        inline char* GetIpAddress()      { return ipAddress; };
+        inline uint32_t GetPort()        { return port; };
 
     private:
-        void Init(const uint32_t port, const std::string& hostAddress);
         using HTTPClient::CreateRequest;
+
+        void Init(const uint32_t port, const std::string& hostAddress);
         void Receive();
         void Proccess();
         void Send();
@@ -40,5 +39,6 @@ namespace Net
         DataBuffer buffer;
     };
 }
+
 #endif // !HTTPSCLIENT_H
 

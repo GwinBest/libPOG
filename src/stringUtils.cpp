@@ -1,64 +1,60 @@
 #include "stringUtils.h"
 
-namespace StringUtils
-{
-    std::string Trim(const std::string_view stringToTrim)
-    {
-        std::string resultString = stringToTrim.data();
+#include <algorithm>
 
-        resultString = TrimFront(resultString);
-        resultString = TrimEnd(resultString);
+std::string StringUtils::Trim(const std::string_view stringToTrim) {
+    std::string resultString = stringToTrim.data();
 
-        return resultString;
-    }
+    resultString = TrimFront(resultString);
+    resultString = TrimEnd(resultString);
 
-    std::string TrimFront(const std::string_view stringToTrim)
-    {
-        std::string resultString = stringToTrim.data();
+    return resultString;
+}
 
-        resultString.erase(resultString.begin(), std::find_if(
+std::string StringUtils::TrimFront(const std::string_view stringToTrim) {
+    std::string resultString = stringToTrim.data();
+
+    resultString.erase(
+        resultString.begin(),
+        std::find_if(
             resultString.begin(),
             resultString.end(),
-            [](unsigned char ch)
-            {
-                return !std::isspace(ch);
-            }));
+            [](unsigned char ch) { return !std::isspace(ch); }
+        )
+    );
 
-        return resultString;
-    }
+    return resultString;
+}
 
-    std::string TrimEnd(const std::string_view stringToTrim)
-    {
-        std::string resultString = stringToTrim.data();
+std::string StringUtils::TrimEnd(const std::string_view stringToTrim) {
+    std::string resultString = stringToTrim.data();
 
-        resultString.erase(std::find_if(
+    resultString.erase(
+        std::find_if(
             resultString.rbegin(),
             resultString.rend(),
-            [](unsigned char ch)
-            {
-                return !std::isspace(ch);
-            }).base(), resultString.end());
+            [](unsigned char ch) { return !std::isspace(ch); }
+        ).base(),
+        resultString.end()
+    );
 
-        return resultString;
-    }
+    return resultString;
+}
 
-    std::string ToUpper(const std::string_view stringToUpper)
-    {
-        std::string resultString = stringToUpper.data();
+std::string StringUtils::ToUpper(const std::string_view stringToUpper) {
+    std::string resultString = stringToUpper.data();
 
-        for (auto& ch : resultString)
-            ch = toupper(ch);
+    for (auto& ch : resultString)
+        ch = toupper(ch);
 
-        return resultString;
-    }
+    return resultString;
+}
 
-    std::string ToLower(const std::string_view stringToLower)
-    {
-        std::string resultString = stringToLower.data();
+std::string StringUtils::ToLower(const std::string_view stringToLower) {
+    std::string resultString = stringToLower.data();
 
-        for (auto& ch : resultString)
-            ch = tolower(ch);
+    for (auto& ch : resultString)
+        ch = tolower(ch);
 
-        return resultString;
-    }
+    return resultString;
 }

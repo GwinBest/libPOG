@@ -1,15 +1,16 @@
-#ifndef STRING_H
-#define STRING_H
+#ifndef STRING_UTILS_H
+#define STRING_UTILS_H
 
 #include <string>
 
-namespace StringUtils
-{
-    std::string Trim(const std::string_view stringToTrim);
-    std::string TrimFront(const std::string_view stringToTrim);
-    std::string TrimEnd(const std::string_view stringToTrim);
+class StringUtils {
+public:
+    static std::string Trim(const std::string_view stringToTrim);
+    static std::string TrimFront(const std::string_view stringToTrim);
+    static std::string TrimEnd(const std::string_view stringToTrim);
 
-    std::string ToUpper(const std::string_view stringToUpper);
-    std::string ToLower(const std::string_view stringToLower);
-}
-#endif // !STRING_H
+    static std::string ToUpper(const std::string_view stringToUpper);
+    static std::string ToLower(const std::string_view stringToLower);
+};
+
+#endif // !STRING_UTILS_H
