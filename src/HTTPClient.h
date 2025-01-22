@@ -16,7 +16,7 @@
 
 #include <string>
 
-#include "buffer.h"
+#include "dataBuffer.h"
 
 #ifdef _WIN32 // Windows NT
 typedef struct sockaddr_in SOCKADDR_IN;

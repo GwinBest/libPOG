@@ -149,7 +149,7 @@ bool HTTPClient::Connect(const uint32_t port, const std::string_view hostAddress
 
     Init(port, hostAddress);
 
-    if (connect(clientSocket, reinterpret_cast<SOCKADDR *>(socketInfo.IPv4), sizeof(*socketInfo.IPv4))) {
+    if (connect(clientSocket, reinterpret_cast<SOCKADDR*>(socketInfo.IPv4), sizeof(*socketInfo.IPv4))) {
         std::cout << "Connection Error " << ConvertError() << std::endl;
         return false;
     }
