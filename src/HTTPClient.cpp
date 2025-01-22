@@ -218,19 +218,3 @@ void HTTPClient::Disconnect() {
     freeaddrinfo(result);
     clientStatus = ClientStatus::kClientDisconnected;
 }
-
-HTTPClient::~HTTPClient() {
-    HTTPClient::Disconnect();
-}
-
-uint8_t HTTPClient::GetClientStatus() {
-    return clientStatus;
-}
-
-char *HTTPClient::GetIpAddress() {
-    return ipAddress;
-}
-
-uint32_t HTTPClient::GetPort() {
-    return port;
-}

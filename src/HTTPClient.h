@@ -44,7 +44,7 @@ typedef int SOCKET;
 static constexpr uint8_t IPV4_LENGTH = 15;
 static constexpr uint8_t IPV6_LENGTH = 65;
 
-static constexpr uint8_t HTTP_PORT = 80;
+static constexpr uint8_t  HTTP_PORT = 80;
 static constexpr uint16_t HTTPS_PORT = 443;
 
 namespace Net {
@@ -56,15 +56,15 @@ namespace Net {
     class HTTPClient {
     public:
         HTTPClient();
-        virtual ~HTTPClient();
+        virtual ~HTTPClient() { HTTPClient::Disconnect(); }
 
         bool Connect(const uint32_t port, const std::string_view hostAddress);
         std::string SendHttpRequest(const std::string_view method, const std::string_view uri, const std::string_view version);
         void Disconnect();
 
-        uint8_t GetClientStatus();
-        char* GetIpAddress();
-        uint32_t GetPort();
+        inline uint8_t GetClientStatus() { return clientStatus; }
+        inline char* GetIpAddress()      { return ipAddress; }
+        inline uint32_t GetPort()        { return port; }
 
     protected:
         inline std::string CreateRequest(std::string method, const std::string_view uri, const std::string_view version);

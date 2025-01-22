@@ -122,18 +122,6 @@ void HTTPSClient::Proccess() {
     response.assign(buffer.data);
 }
 
-uint8_t HTTPSClient::GetClientStatus() {
-    return clientStatus;
-}
-
-char *HTTPSClient::GetIpAddress() {
-    return ipAddress;
-}
-
-uint32_t HTTPSClient::GetPort() {
-    return port;
-}
-
 void HTTPSClient::HTTPSDisconnect() {
     if (clientStatus != ClientStatus::kClientDisconnected) {
         SSL_shutdown(sslSocket);

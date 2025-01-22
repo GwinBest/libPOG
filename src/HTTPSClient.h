@@ -8,18 +8,18 @@
 #include "HTTPClient.h"
 
 namespace Net {
-    class HTTPSClient final : public HTTPClient {
+    class HTTPSClient final : HTTPClient {
     public:
         HTTPSClient();
-        ~HTTPSClient();
+        ~HTTPSClient() override { HTTPSClient::Disconnect(); }
 
         bool HTTPSConnect(const uint32_t port, const std::string& hostAddress);
         std::string SendHttpsRequest(const std::string& method, const std::string& uri, const std::string& version);
         void HTTPSDisconnect();
 
-        uint8_t GetClientStatus();
-        char* GetIpAddress();
-        uint32_t GetPort();
+        inline uint8_t GetClientStatus() { return clientStatus; };
+        inline char* GetIpAddress()      { return ipAddress; };
+        inline uint32_t GetPort()        { return port; };
 
     private:
         using HTTPClient::CreateRequest;

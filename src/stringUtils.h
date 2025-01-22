@@ -1,5 +1,5 @@
-#ifndef STRING_H
-#define STRING_H
+#ifndef STRING_UTILS_H
+#define STRING_UTILS_H
 
 #include <string>
 
@@ -13,4 +13,4 @@ public:
     static std::string ToLower(const std::string_view stringToLower);
 };
 
-#endif // !STRING_H
+#endif // !STRING_UTILS_H
