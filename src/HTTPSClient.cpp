@@ -132,6 +132,3 @@ void HTTPSClient::HTTPSDisconnect() {
     HTTPClient::Disconnect();
 }
 
-HTTPSClient::~HTTPSClient() {
-    HTTPSClient::Disconnect();
-}

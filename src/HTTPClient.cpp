@@ -1,6 +1,7 @@
 #include "HTTPClient.h"
 
 #include <iostream>
+#include <cstring>
 
 #include "stringUtils.h"
 
@@ -11,92 +12,97 @@
 #ifdef _WIN32 
 #define WIN(exp) exp
 #define NIX(exp)
-// convert WinSock code error to Posix error
-inline int ConvertError()
-{
-    switch (WSAGetLastError())
-    {
-    case 0:
-        return 0;
-    case WSAEINTR:
-        return EINTR;
-    case WSAEINVAL:
-        return EINVAL;
-    case WSA_INVALID_HANDLE:
-        return EBADF;
-    case WSA_NOT_ENOUGH_MEMORY:
-        return ENOMEM;
-    case WSA_INVALID_PARAMETER:
-        return EINVAL;
-    case WSAENAMETOOLONG:
-        return ENAMETOOLONG;
-    case WSAENOTEMPTY:
-        return ENOTEMPTY;
-    case WSAEWOULDBLOCK:
-        return EAGAIN;
-    case WSAEINPROGRESS:
-        return EINPROGRESS;
-    case WSAEALREADY:
-        return EALREADY;
-    case WSAENOTSOCK:
-        return ENOTSOCK;
-    case WSAEDESTADDRREQ:
-        return EDESTADDRREQ;
-    case WSAEMSGSIZE:
-        return EMSGSIZE;
-    case WSAEPROTOTYPE:
-        return EPROTOTYPE;
-    case WSAENOPROTOOPT:
-        return ENOPROTOOPT;
-    case WSAEPROTONOSUPPORT:
-        return EPROTONOSUPPORT;
-    case WSAEOPNOTSUPP:
-        return EOPNOTSUPP;
-    case WSAEAFNOSUPPORT:
-        return EAFNOSUPPORT;
-    case WSAEADDRINUSE:
-        return EADDRINUSE;
-    case WSAEADDRNOTAVAIL:
-        return EADDRNOTAVAIL;
-    case WSAENETDOWN:
-        return ENETDOWN;
-    case WSAENETUNREACH:
-        return ENETUNREACH;
-    case WSAENETRESET:
-        return ENETRESET;
-    case WSAECONNABORTED:
-        return ECONNABORTED;
-    case WSAECONNRESET:
-        return ECONNRESET;
-    case WSAENOBUFS:
-        return ENOBUFS;
-    case WSAEISCONN:
-        return EISCONN;
-    case WSAENOTCONN:
-        return ENOTCONN;
-    case WSAETIMEDOUT:
-        return ETIMEDOUT;
-    case WSAECONNREFUSED:
-        return ECONNREFUSED;
-    case WSAELOOP:
-        return ELOOP;
-    case WSAEHOSTUNREACH:
-        return EHOSTUNREACH;
-    default:
-        return EIO;
-    }
-}
 #else //*nix
 #define WIN(exp)
 #define NIX(exp) exp
+
+#include <arpa/inet.h>
 #endif
 
 using namespace Net;
 
+// convert WinSock code error to Posix error
+inline static int ConvertError() {
+#ifdef _WIN32
+    switch (WSAGetLastError()) {
+        case 0:
+            return 0;
+        case WSAEINTR:
+            return EINTR;
+        case WSAEINVAL:
+            return EINVAL;
+        case WSA_INVALID_HANDLE:
+            return EBADF;
+        case WSA_NOT_ENOUGH_MEMORY:
+            return ENOMEM;
+        case WSA_INVALID_PARAMETER:
+            return EINVAL;
+        case WSAENAMETOOLONG:
+            return ENAMETOOLONG;
+        case WSAENOTEMPTY:
+            return ENOTEMPTY;
+        case WSAEWOULDBLOCK:
+            return EAGAIN;
+        case WSAEINPROGRESS:
+            return EINPROGRESS;
+        case WSAEALREADY:
+            return EALREADY;
+        case WSAENOTSOCK:
+            return ENOTSOCK;
+        case WSAEDESTADDRREQ:
+            return EDESTADDRREQ;
+        case WSAEMSGSIZE:
+            return EMSGSIZE;
+        case WSAEPROTOTYPE:
+            return EPROTOTYPE;
+        case WSAENOPROTOOPT:
+            return ENOPROTOOPT;
+        case WSAEPROTONOSUPPORT:
+            return EPROTONOSUPPORT;
+        case WSAEOPNOTSUPP:
+            return EOPNOTSUPP;
+        case WSAEAFNOSUPPORT:
+            return EAFNOSUPPORT;
+        case WSAEADDRINUSE:
+            return EADDRINUSE;
+        case WSAEADDRNOTAVAIL:
+            return EADDRNOTAVAIL;
+        case WSAENETDOWN:
+            return ENETDOWN;
+        case WSAENETUNREACH:
+            return ENETUNREACH;
+        case WSAENETRESET:
+            return ENETRESET;
+        case WSAECONNABORTED:
+            return ECONNABORTED;
+        case WSAECONNRESET:
+            return ECONNRESET;
+        case WSAENOBUFS:
+            return ENOBUFS;
+        case WSAEISCONN:
+            return EISCONN;
+        case WSAENOTCONN:
+            return ENOTCONN;
+        case WSAETIMEDOUT:
+            return ETIMEDOUT;
+        case WSAECONNREFUSED:
+            return ECONNREFUSED;
+        case WSAELOOP:
+            return ELOOP;
+        case WSAEHOSTUNREACH:
+            return EHOSTUNREACH;
+        default:
+            return EIO;
+    }
+#else
+    return errno;
+#endif
+}
+
 HTTPClient::HTTPClient() {
     infoLength = sizeof(*socketInfo.IPv4);
     hints.ai_family = AF_UNSPEC;
-    memset(&hints, 0, sizeof(hints));
+    std::memset(&hints, 0, sizeof(hints));
 }
 
 void HTTPClient::Init(const uint32_t port, const std::string_view hostAddress) {
@@ -127,7 +133,7 @@ void HTTPClient::Init(const uint32_t port, const std::string_view hostAddress) {
     }
     socketInfo.IPv4->sin_port = htons(this->port);
 
-    if (((clientSocket = socket(socketInfo.IPv4->sin_family, SOCK_STREAM, NULL)) == SOCKET_ERROR)) {
+    if (((clientSocket = socket(socketInfo.IPv4->sin_family, SOCK_STREAM, 0)) == SOCKET_ERROR)) {
         std::cout << "Client socket init failed" << std::endl;
         WIN(WSACleanup());
         freeaddrinfo(result);
@@ -149,7 +155,7 @@ bool HTTPClient::Connect(const uint32_t port, const std::string_view hostAddress
 
     Init(port, hostAddress);
 
-    if (connect(clientSocket, reinterpret_cast<SOCKADDR*>(socketInfo.IPv4), sizeof(*socketInfo.IPv4))) {
+    if (connect(clientSocket, reinterpret_cast<SOCKADDR *>(socketInfo.IPv4), sizeof(*socketInfo.IPv4))) {
         std::cout << "Connection Error " << ConvertError() << std::endl;
         return false;
     }
@@ -172,7 +178,7 @@ std::string HTTPClient::SendHttpRequest(const std::string_view method, const std
     return response;
 }
 
-inline std::string HTTPClient::CreateRequest(std::string method, const std::string_view uri, const std::string_view version) {
+std::string HTTPClient::CreateRequest(std::string method, const std::string_view uri, const std::string_view version) {
     return request = ((method = StringUtils::ToUpper(StringUtils::Trim(method))) == "GET") ?
         method + " " + StringUtils::Trim(uri) + "/ HTTP/" + StringUtils::Trim(version) + "\r\n" +
             "Host:" + StringUtils::ToLower(StringUtils::Trim(hostAddress)) + "\r\n" +
@@ -184,7 +190,7 @@ inline std::string HTTPClient::CreateRequest(std::string method, const std::stri
 }
 
 void HTTPClient::Send() {
-    if ((send(clientSocket, request.c_str(), request.size(), NULL) != SOCKET_ERROR)) return;
+    if ((send(clientSocket, request.c_str(), request.size(), 0) != SOCKET_ERROR)) return;
 
     std::cout << "Send error:" << ConvertError() << std::endl;
     WIN(WSACleanup());
@@ -195,7 +201,7 @@ void HTTPClient::Send() {
 }
 
 void HTTPClient::Receive() {
-    if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE - 1, NULL)) != SOCKET_ERROR) return;
+    if ((buffer.size = recv(clientSocket, buffer.data, BUFFER_MAX_SIZE - 1, 0)) != SOCKET_ERROR) return;
 
     std::cout << "Receive error:" << ConvertError() << std::endl;
     WIN(WSACleanup());

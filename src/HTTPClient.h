@@ -5,13 +5,13 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #else  //*nix
-#include <sys/socket.h>
+#include <cstdio>
+#include <cstdlib>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <sys/socket.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <netdb.h>
 #endif
 
 #include <string>
@@ -22,6 +22,7 @@
 typedef struct sockaddr_in SOCKADDR_IN;
 typedef struct sockaddr_in6 SOCKADDR_IN6;
 #else // POSIX
+typedef struct sockaddr SOCKADDR;
 typedef struct sockaddr_in SOCKADDR_IN;
 typedef struct sockaddr_in6 SOCKADDR_IN6;
 typedef struct addrinfo ADDRINFO;
@@ -67,7 +68,7 @@ namespace Net {
         inline uint32_t GetPort()        { return port; }
 
     protected:
-        inline std::string CreateRequest(std::string method, const std::string_view uri, const std::string_view version);
+        std::string CreateRequest(std::string method, const std::string_view uri, const std::string_view version);
 
     protected:
         enum ClientStatus : uint8_t {
