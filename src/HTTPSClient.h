@@ -7,10 +7,8 @@
 
 #include "HTTPClient.h"
 
-namespace Net
-{
-    class HTTPSClient final : HTTPClient
-    {
+namespace Net {
+    class HTTPSClient final : public HTTPClient {
     public:
         HTTPSClient();
         ~HTTPSClient();
@@ -24,8 +22,9 @@ namespace Net
         uint32_t GetPort();
 
     private:
-        void Init(const uint32_t port, const std::string& hostAddress);
         using HTTPClient::CreateRequest;
+
+        void Init(const uint32_t port, const std::string& hostAddress);
         void Receive();
         void Proccess();
         void Send();
@@ -40,5 +39,6 @@ namespace Net
         DataBuffer buffer;
     };
 }
+
 #endif // !HTTPSCLIENT_H
 

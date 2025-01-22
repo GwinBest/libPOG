@@ -29,12 +29,16 @@ typedef int SOCKET;
 #endif
 
 #ifdef _WIN32
-#pragma comment(lib, "ws2_32.lib")
+    #pragma comment(lib, "ws2_32.lib")
+#endif
+
+#ifndef INVALID_SOCKET
+    #define INVALID_SOCKET 0
 #endif
 
 #define INVALID_PORT  0
 #ifndef SOCKET_ERROR
-#define SOCKET_ERROR -1
+    #define SOCKET_ERROR -1
 #endif
 
 static constexpr uint8_t IPV4_LENGTH = 15;
@@ -43,16 +47,13 @@ static constexpr uint8_t IPV6_LENGTH = 65;
 static constexpr uint8_t HTTP_PORT = 80;
 static constexpr uint16_t HTTPS_PORT = 443;
 
-namespace Net
-{
-    union SocketInfo
-    {
+namespace Net {
+    union SocketInfo {
         SOCKADDR_IN* IPv4 = nullptr;
         SOCKADDR_IN6* IPv6;
     };
 
-    class HTTPClient
-    {
+    class HTTPClient {
     public:
         HTTPClient();
         virtual ~HTTPClient();
@@ -69,9 +70,7 @@ namespace Net
         inline std::string CreateRequest(std::string method, const std::string_view uri, const std::string_view version);
 
     protected:
-
-        enum ClientStatus : uint8_t
-        {
+        enum ClientStatus : uint8_t {
             kClientDisconnected = 0,
             kCLientInited = 1,
             kClientConnected = 2,
@@ -106,4 +105,5 @@ namespace Net
         ClientStatus clientStatus = ClientStatus::kClientDisconnected;
     };
 }
+
 #endif // !HTTPClient_H
