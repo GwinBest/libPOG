@@ -9,8 +9,8 @@ add_library(libPOG
     src/HTTPClient.cpp
     src/HTTPSClient.h
     src/HTTPSClient.cpp
-    src/StringUtils.h
-    src/StringUtils.cpp
+    src/stringUtils.h
+    src/stringUtils.cpp
     src/buffer.h
 )
 
