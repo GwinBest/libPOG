@@ -1,6 +1,5 @@
 #include "HTTPClient.h"
 
-#include <cassert>
 #include <iostream>
 
 #include "stringUtils.h"
@@ -96,18 +95,12 @@ namespace Net
 {
     HTTPClient::HTTPClient()
     {
-        result = nullptr;
-        socketInfo.IPv4 = nullptr;
-        port = ntohs(INVALID_PORT);
-        clientSocket = INVALID_SOCKET;
         infoLength = sizeof(*socketInfo.IPv4);
-        clientStatus = ClientStatus::kClientDisconnected;
-
-        ZeroMemory(&hints, sizeof(hints));
         hints.ai_family = AF_UNSPEC;
+        memset(&hints, 0, sizeof(hints));
     }
 
-    void HTTPClient::Init(const uint32_t port, const std::string& hostAddress)
+    void HTTPClient::Init(const uint32_t port, const std::string_view hostAddress)
     {
         this->port = port;
         this->hostAddress = hostAddress;
@@ -119,7 +112,7 @@ namespace Net
                 exit(SOCKET_ERROR);
             });
 
-        if (getaddrinfo(hostAddress.c_str(), NULL, &hints, &result))
+        if (getaddrinfo(this->hostAddress.c_str(), NULL, &hints, &result))
         {
             std::cout << "getaddrinfo() failed" << std::endl;
             WIN(WSACleanup());
@@ -154,7 +147,7 @@ namespace Net
     /// HTTP port - 80
     /// HTTPS port - 443
     /// </summary>
-    bool HTTPClient::Connect(const uint32_t port, const std::string& hostAddress)
+    bool HTTPClient::Connect(const uint32_t port, const std::string_view hostAddress)
     {
         if (clientStatus != ClientStatus::kClientDisconnected)
         {
@@ -174,11 +167,11 @@ namespace Net
         return true;
     }
 
-    std::string HTTPClient::SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version)
+    std::string HTTPClient::SendHttpRequest(const std::string_view method, const std::string_view uri, const std::string_view version)
     {
         response.clear();
         request.clear();
-        request = CreateRequest(const_cast<std::string&>(method), const_cast<std::string&>(uri), const_cast<std::string&>(version));
+        request = CreateRequest(method.data(), uri.data(), version.data());
 
         Send();
         do
@@ -190,7 +183,7 @@ namespace Net
         return response;
     }
 
-    inline std::string HTTPClient::CreateRequest(std::string& method, std::string& uri, std::string& version)
+    inline std::string HTTPClient::CreateRequest(std::string method, const std::string_view uri, const std::string_view version)
     {
         return request = ((method = StringUtils::ToUpper(StringUtils::Trim(method))) == "GET") ?
 

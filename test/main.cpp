@@ -2,8 +2,6 @@
 #include "../src/HTTPSClient.h"
 
 #include <iostream>
-#include <locale>
-
 
 int main()
 {
@@ -32,7 +30,7 @@ int main()
 
     std::cout << "Response 1: " << response << std::endl;
     client.Disconnect();
-   
+
     response.clear();
 
     client.Connect(HTTP_PORT, "www.xserver.ru");

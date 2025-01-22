@@ -1,11 +1,9 @@
 #ifndef HTTPCLIENT_H
 #define HTTPCLIENT_H
 
-#include <stdint.h>
-
 #ifdef _WIN32 // Windows NT
-#include <WS2tcpip.h>
 #include <WinSock2.h>
+#include <WS2tcpip.h>
 #else  //*nix
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -15,6 +13,7 @@
 #include <stdlib.h>
 #include <netdb.h>
 #endif
+
 #include <string>
 
 #include "buffer.h"
@@ -38,17 +37,17 @@ typedef int SOCKET;
 #define SOCKET_ERROR -1
 #endif
 
-#define IPV4_LENGTH 15
-#define IPV6_LENGTH 65
+static constexpr uint8_t IPV4_LENGTH = 15;
+static constexpr uint8_t IPV6_LENGTH = 65;
 
-#define HTTP_PORT  80
-#define HTTPS_PORT 443
+static constexpr uint8_t HTTP_PORT = 80;
+static constexpr uint16_t HTTPS_PORT = 443;
 
 namespace Net
 {
     union SocketInfo
     {
-        SOCKADDR_IN* IPv4;
+        SOCKADDR_IN* IPv4 = nullptr;
         SOCKADDR_IN6* IPv6;
     };
 
@@ -56,10 +55,10 @@ namespace Net
     {
     public:
         HTTPClient();
-        ~HTTPClient();
+        virtual ~HTTPClient();
 
-        bool Connect(const uint32_t port, const std::string& hostAddress);
-        std::string SendHttpRequest(const std::string& method, const std::string& uri, const std::string& version);
+        bool Connect(const uint32_t port, const std::string_view hostAddress);
+        std::string SendHttpRequest(const std::string_view method, const std::string_view uri, const std::string_view version);
         void Disconnect();
 
         uint8_t GetClientStatus();
@@ -67,7 +66,7 @@ namespace Net
         uint32_t GetPort();
 
     protected:
-        inline std::string CreateRequest(std::string& method, std::string& uri, std::string& version);
+        inline std::string CreateRequest(std::string method, const std::string_view uri, const std::string_view version);
 
     protected:
 
@@ -79,22 +78,22 @@ namespace Net
         };
 
 #ifdef _WIN32
-        WSADATA wsaData;
+        WSADATA wsaData = {};
         static const WORD DLLVersion = MAKEWORD(2, 2);
 #endif
 
-        SOCKET clientSocket;
-        ADDRINFO hints;
-        ADDRINFO* result;
-        SocketInfo socketInfo;
-        uint32_t infoLength;
+        SOCKET clientSocket = INVALID_SOCKET;
+        ADDRINFO hints = {};
+        ADDRINFO* result = nullptr;
+        SocketInfo socketInfo = {};
+        uint32_t infoLength = 0;
 
-        char ipAddress[IPV6_LENGTH];
+        char ipAddress[IPV6_LENGTH] = "";
         std::string hostAddress;
-        uint32_t port;
+        uint32_t port = ntohs(INVALID_PORT);
 
     private:
-        void Init(const uint32_t port, const std::string& hostAddress);
+        void Init(const uint32_t port, const std::string_view hostAddress);
         void Receive();
         void Proccess();
         void Send();
@@ -102,10 +101,9 @@ namespace Net
     private:
         std::string request;
         std::string response;
-        DataBuffer buffer;
+        DataBuffer buffer = {};
 
-        ClientStatus clientStatus;
+        ClientStatus clientStatus = ClientStatus::kClientDisconnected;
     };
 }
-
 #endif // !HTTPClient_H
